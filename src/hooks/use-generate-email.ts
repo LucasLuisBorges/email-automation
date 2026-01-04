@@ -15,21 +15,30 @@ export function useGenerateEmail(onGenerate: (code: string) => void) {
   async function generateEmail(prompt: string) {
     if (!prompt.trim()) return;
 
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", content: prompt, id: crypto.randomUUID() },
-    ]);
+    const newUserMessage = {
+      role: "user" as const,
+      content: prompt,
+      id: crypto.randomUUID(),
+    };
+    const updatedMessages = [...messages, newUserMessage];
+
+    setMessages(updatedMessages);
     setInput("");
     onGenerate("");
 
     startTransition(async () => {
       try {
+        const conversationHistory = updatedMessages.map((msg) => ({
+          role: msg.role === "ai" ? "assistant" : "user",
+          content: msg.content,
+        }));
+
         const response = await fetch("/api/generate-email", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ prompt }),
+          body: JSON.stringify({ messages: conversationHistory }),
         });
 
         if (!response.ok) {

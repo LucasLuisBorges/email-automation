@@ -9,10 +9,10 @@ const openai = new OpenAI({
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt } = await req.json();
+    const { messages: conversationHistory } = await req.json();
 
-    if (!prompt) {
-      return new Response("É necessário fornecer um prompt", { status: 400 });
+    if (!conversationHistory || conversationHistory.length === 0) {
+      return new Response("É necessário fornecer mensagens", { status: 400 });
     }
 
     const stream = await openai.chat.completions.create({
@@ -21,12 +21,9 @@ export async function POST(req: NextRequest) {
         {
           role: "system",
           content:
-            "Você é um gerador de templates de email em HTML. Responda SEMPRE em português do Brasil. Retorne APENAS código HTML válido para um email personalizado. Não inclua explicações, comentários ou texto adicional. Todo o conteúdo do email deve estar em português.",
+            "Você é um gerador de templates de email em HTML. Responda SEMPRE em português do Brasil. Retorne APENAS código HTML válido para um email personalizado. Não inclua explicações, comentários ou texto adicional. Todo o conteúdo do email deve estar em português. Quando o usuário pedir ajustes ou correções, use o contexto da conversa anterior para modificar o email mantendo o que já estava bom.",
         },
-        {
-          role: "user",
-          content: `Gere um template de email em HTML personalizado: ${prompt}`,
-        },
+        ...conversationHistory,
       ],
       stream: true,
     });
