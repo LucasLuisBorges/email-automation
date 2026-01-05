@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📧 Email Automation - Gerador de Templates HTML
 
-## Getting Started
+Aplicação Next.js para geração automática de templates de email em HTML usando IA (Groq/Llama).
 
-First, run the development server:
+## ✨ Funcionalidades
+
+- 🤖 Geração de emails em HTML com IA (Groq - **100% gratuito**)
+- 💬 Chat interativo com contexto de conversa
+- 🎨 Preview em tempo real do email
+- 📋 Copiar HTML gerado
+- 🔒 Sanitização de HTML para prevenir XSS e injection
+- 📱 Interface totalmente responsiva
+
+## 🚀 Como Executar o Projeto
+
+### 1. Pré-requisitos
+
+- Node.js 18+ ou [Bun](https://bun.sh)
+- Conta gratuita no [Groq](https://console.groq.com)
+
+### 2. Obter a Chave da API (Groq - Gratuito)
+
+1. Acesse [https://console.groq.com](https://console.groq.com)
+2. Faça login ou crie uma conta (gratuita)
+3. Vá em **API Keys** no menu lateral
+4. Clique em **Create API Key**
+5. Copie a chave gerada (formato: `gsk_...`)
+
+> **⚡ Por que Groq?** É 100% gratuito, extremamente rápido e compatível com o SDK da OpenAI!
+
+### 3. Instalação
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone o repositório
+git clone <seu-repositorio>
+cd email-automation
+
+# Instale as dependências
+bun install
+# ou
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 4. Configuração
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Crie um arquivo `.env.local` na raiz do projeto:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+GROQ_API_KEY=sua_chave_aqui
+```
 
-## Learn More
+**⚠️ IMPORTANTE:** Nunca commite o arquivo `.env.local` no Git!
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Executar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Modo desenvolvimento
+bun dev
+# ou
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Acesse [http://localhost:3000/v1/email](http://localhost:3000/v1/email) no navegador.
 
-## Deploy on Vercel
+## 🛠️ Tecnologias
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js 15** - Framework React
+- **TypeScript** - Tipagem estática
+- **Groq API** - IA para geração de conteúdo (Llama 3.3)
+- **DOMPurify** - Sanitização de HTML
+- **Tailwind CSS** - Estilização
+- **shadcn/ui** - Componentes UI
+- **Sonner** - Notificações toast
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── app/
+│   ├── api/generate-email/    # API Route com streaming
+│   └── v1/email/               # Página principal
+├── components/
+│   ├── chat.tsx                # Interface de chat
+│   └── code-preview.tsx        # Preview e código HTML
+├── hooks/
+│   └── use-generate-email.ts   # Hook customizado
+├── lib/
+│   └── utils.ts                # Utilitários
+└── config/
+    └── env.ts                  # Validação de env vars
+```
+
+## 🔒 Segurança
+
+O projeto implementa múltiplas camadas de segurança:
+
+- ✅ API Key no servidor (nunca exposta no cliente)
+- ✅ Sanitização de input do usuário
+- ✅ DOMPurify para HTML gerado
+- ✅ Iframe com sandbox
+- ✅ Validação de mensagens
+
+## 📝 Como Usar
+
+1. Digite a descrição do email desejado no chat
+   - Exemplo: "Email promocional de desconto de 50% em tênis"
+2. Aguarde a geração em tempo real
+3. Visualize o preview ao vivo
+4. Copie o HTML gerado
+5. Faça ajustes conversando com a IA (mantém contexto!)
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Sinta-se livre para abrir issues e pull requests.
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
