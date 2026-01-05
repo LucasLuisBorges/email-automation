@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import DOMPurify from "dompurify";
+import { useMemo, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { toast } from "sonner";
@@ -13,6 +14,80 @@ interface CodePreviewProps {
 export function CodePreview({ code }: CodePreviewProps) {
   const [isCopied, setIsCopied] = useState(false);
 
+  // Sanitiza o HTML para prevenir XSS e injection
+  const sanitizedHtml = useMemo(() => {
+    if (!code) return "";
+
+    return DOMPurify.sanitize(code, {
+      ALLOWED_TAGS: [
+        "html",
+        "head",
+        "body",
+        "title",
+        "style",
+        "meta",
+        "link",
+        "div",
+        "span",
+        "p",
+        "a",
+        "img",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "ul",
+        "ol",
+        "li",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "td",
+        "th",
+        "br",
+        "hr",
+        "strong",
+        "em",
+        "b",
+        "i",
+        "u",
+        "small",
+        "center",
+        "font",
+        "button",
+        "section",
+        "header",
+        "footer",
+        "article",
+        "main",
+      ],
+      ALLOWED_ATTR: [
+        "class",
+        "id",
+        "style",
+        "href",
+        "src",
+        "alt",
+        "title",
+        "width",
+        "height",
+        "align",
+        "border",
+        "cellpadding",
+        "cellspacing",
+        "bgcolor",
+        "color",
+        "target",
+        "rel",
+      ],
+      ALLOW_DATA_ATTR: false,
+      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):)/i,
+    });
+  }, [code]);
+
   const handleCopyHtml = async () => {
     if (!code) {
       toast.error("Nenhum código para copiar");
@@ -20,7 +95,8 @@ export function CodePreview({ code }: CodePreviewProps) {
     }
 
     try {
-      await navigator.clipboard.writeText(code);
+      // Copia o HTML sanitizado
+      await navigator.clipboard.writeText(sanitizedHtml);
       setIsCopied(true);
       toast.success("HTML copiado!");
       setTimeout(() => setIsCopied(false), 2000);
@@ -58,9 +134,9 @@ export function CodePreview({ code }: CodePreviewProps) {
         <div className="flex-1">
           <iframe
             title="Code Preview"
-            srcDoc={code}
+            srcDoc={sanitizedHtml}
             className="w-full h-full border-0"
-            sandbox="allow-scripts"
+            sandbox="allow-scripts allow-same-origin"
           />
         </div>
       </div>
